@@ -82,6 +82,8 @@ def sample_pagerank(corpus, damping_factor, n):
     while i < n:
         page_visited = transition_model(corpus, page_visited, damping_factor)
         page_rank[page_visited] += 1
+        #This currently returns not the percentage point, so will need to add
+        # all the values and find part
     return page_rank
 
 
@@ -94,7 +96,17 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+    N = len(corpus)
+    page_rank = dict()
+    for page,links in corpus:
+        page_rank[page] = 1/N
+    converged = False
+    while not converged:
+        converged = True
+        for page, page_r in page_rank:
+            #Now need to finish the formula, not sure how to create it, 
+            #Maybe best to create a separate function that can be called
+            page_rank[page] = (1 - damping_factor) / N + damping_factor*(())
 
 
 if __name__ == "__main__":
