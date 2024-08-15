@@ -57,11 +57,20 @@ def transition_model(corpus, page, damping_factor):
     linked to by `page`. With probability `1 - damping_factor`, choose
     a link at random chosen from all pages in the corpus.
     """
-    choice = random(0,1)
+    choice = random()
+    # Easiest for me will be to create a list with number of elements that adds up to a 1000, or 
+    # 10000 with the proportional distirbution, and the choose at random from that list
+    list_of_links =[]
+    pages = corpus.keys()
+    for page in pages:
+        no_of_pages = corpus[page]*1000
+        for n in range(no_of_pages):
+            list_of_links.append(page)
+    
     if choice < damping_factor:
         # Here will need to return any of the links, I assume that the links are passed on 
         # in the page argument
-        return random.choice(page)
+        return random.choice(list_of_links)
     else:
         page, links = random.choice(list(corpus.items()))
         return page
