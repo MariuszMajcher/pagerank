@@ -66,10 +66,13 @@ def transition_model(corpus, page, damping_factor):
         no_of_pages = corpus[page]*1000
         for n in range(no_of_pages):
             list_of_links.append(page)
-    
+    # TODO: ok Looks like I can change this, but I think I know how, Will need to create the 
+    # TODO: probabilities in the list_of_links once and the select the link,
+    # TODO: will need to write a simple equation that will define how many times each page 
+    # TODO: will appear in the list
     if choice < damping_factor:
-        # Here will need to return any of the links, I assume that the links are passed on 
-        # in the page argument
+        # Here it needs to return only the page from the page dict, to choose from the links in 
+        # that page
         return random.choice(list_of_links)
     else:
         page, links = random.choice(list(corpus.items()))
