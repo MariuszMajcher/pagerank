@@ -59,7 +59,9 @@ def transition_model(corpus, page, damping_factor):
     """
     choice = random(0,1)
     if choice < damping_factor:
-        return random.choice(corpus[page])
+        # Here will need to return any of the links, I assume that the links are passed on 
+        # in the page argument
+        return random.choice(page)
     else:
         page, links = random.choice(list(corpus.items()))
         return page
