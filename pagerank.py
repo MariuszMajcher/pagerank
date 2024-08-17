@@ -60,12 +60,19 @@ def transition_model(corpus, page, damping_factor):
     # OK so it seems that I have to return a dictionary here, that will correspond to the probabilites of the pages, 
     # page links each have proportion of 0.85 and all the pages in corpus have proportion of 0.15
     proportions = dict()
+
+    # In case there are no links on that page
+    if corpus[page] == {}:
+        for page in corpus.keys():
+            proportions[page] = 1 / len(corpus)
+        return proportions
+    
     for page in corpus.keys():
-        proportions[page] = (0.15 / len(corpus)) # Create each page with proportion of chance being choosen
+        proportions[page] = ((1 - damping_factor) / len(corpus)) # Create each page with proportion of chance being choosen
 
     links = corpus[page]
     for link in links:
-        proportions[link] += (0.85 / len(links)) # This will add these pages proportion of 0.85
+        proportions[link] += (damping_factor / len(links)) # This will add these pages proportion of 0.85
     return proportions
 
 
@@ -79,19 +86,30 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
+    # So the way I understand this is that: 
+    # I need to do it n times, first time choose the page at random, then chose a page based on what I have returned from transition_model, each time the sample is selected I need to update the probabilites
+    choosen_page = random.choice(corpus.keys())
     i = 0
-    page_rank = dict()
 
+    # Create dictinary with 0 for each page, each page will add 1 visit to it, at the end will change it to create proportion of 1 instead by dividing each result by n
+    probabilites = dict()
     for page in corpus.keys():
-        page_rank[page] = 1/len(corpus)
-        
-    page_visited, __ = random.choice(list(corpus.items()))
+        probabilites[page] = 0
+
+    probabilites[choosen_page] += 1
+
     while i < n:
-        page_visited = transition_model(corpus, page_visited, damping_factor)
-        page_rank[page_visited] += 1
-        #This currently returns not the percentage point, so will need to add
-        # all the values and find part
-    return page_rank
+        i += 1
+        list_of_links = []
+        proportions = transition_model(corpus, choosen_page, damping_factor)
+        for key, times in list(proportions.items()):
+            j = times * 1000
+            while j > 0:
+                list_of_links.append(key)
+
+    # Thist might be slow but for now it`s only method that comes to my mind
+    choosen_page = random.choice(list_of_links)
+    probabilites[choosen_page] += 1
 
 
 def iterate_pagerank(corpus, damping_factor):
