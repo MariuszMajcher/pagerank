@@ -57,26 +57,8 @@ def transition_model(corpus, page, damping_factor):
     linked to by `page`. With probability `1 - damping_factor`, choose
     a link at random chosen from all pages in the corpus.
     """
-    choice = random()
-    # Easiest for me will be to create a list with number of elements that adds up to a 1000, or 
-    # 10000 with the proportional distirbution, and the choose at random from that list
-    list_of_links =[]
-    pages = corpus.keys()
-    for page in pages:
-        no_of_pages = corpus[page]*1000
-        for n in range(no_of_pages):
-            list_of_links.append(page)
-    # TODO: ok Looks like I can change this, but I think I know how, Will need to create the 
-    # TODO: probabilities in the list_of_links once and the select the link,
-    # TODO: will need to write a simple equation that will define how many times each page 
-    # TODO: will appear in the list
-    if choice < damping_factor:
-        # Here it needs to return only the page from the page dict, to choose from the links in 
-        # that page
-        return random.choice(list_of_links)
-    else:
-        page, links = random.choice(list(corpus.items()))
-        return page
+    # OK so it seems that I have to return a dictionary here, that will correspond to the probabilites of the pages, 
+    # page links each have proportion of 0.85 and all the pages in corpus have proportion of 0.15
 
 
 def sample_pagerank(corpus, damping_factor, n):
@@ -90,8 +72,10 @@ def sample_pagerank(corpus, damping_factor, n):
     """
     i = 0
     page_rank = dict()
-    for page, __ in corpus:
-        page_rank[page] = 0
+
+    for page in corpus.keys():
+        page_rank[page] = 1/len(corpus)
+        
     page_visited, __ = random.choice(list(corpus.items()))
     while i < n:
         page_visited = transition_model(corpus, page_visited, damping_factor)
