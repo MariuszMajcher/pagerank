@@ -63,7 +63,7 @@ def transition_model(corpus, page, damping_factor):
 
     # In case there are no links on that page
     if corpus[page] == {}:
-        for page in corpus.keys():
+        for page in list(corpus.keys()):
             proportions[page] = 1 / len(corpus)
         return proportions
     
@@ -86,7 +86,8 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    choosen_page = random.choice(corpus.keys())
+
+    choosen_page = random.choice(list(corpus.keys()))
     i = 0
 
     # Create dictinary with 0 for each page, each page will add 1 visit to it, at the end will change it to create proportion of 1 instead by dividing each result by n
