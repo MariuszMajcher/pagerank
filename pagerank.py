@@ -111,7 +111,7 @@ def sample_pagerank(corpus, damping_factor, n):
            
             high = proportions[page] + low
            
-            ranges[page] = tuple(low, high)
+            ranges[page] = (low, high)
             low = ranges[page][0]
 
         choice = random()
