@@ -112,17 +112,17 @@ def sample_pagerank(corpus, damping_factor, n):
             high = proportions[page] + low
            
             ranges[page] = (low, high)
-            low = ranges[page][0]
-
-        choice = random()
-
+            low = ranges[page][1]
+            
+        choice = random.random()
+        
         for item in list(ranges.keys()):
             if choice >= ranges[item][0] and choice < ranges[item][1]:
                 probabilites[item] += 1
 
     for page in probabilites:
         probabilites[page] = probabilites[page] / n
-
+  
     return probabilites 
 
 
