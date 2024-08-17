@@ -86,8 +86,6 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    # So the way I understand this is that: 
-    # I need to do it n times, first time choose the page at random, then chose a page based on what I have returned from transition_model, each time the sample is selected I need to update the probabilites
     choosen_page = random.choice(corpus.keys())
     i = 0
 
@@ -107,9 +105,14 @@ def sample_pagerank(corpus, damping_factor, n):
             while j > 0:
                 list_of_links.append(key)
 
-    # Thist might be slow but for now it`s only method that comes to my mind
-    choosen_page = random.choice(list_of_links)
-    probabilites[choosen_page] += 1
+        # Thist might be slow but for now it`s only method that comes to my mind
+        choosen_page = random.choice(list_of_links)
+        probabilites[choosen_page] += 1
+
+    for page in probabilites:
+        probabilites[page] = probabilites[page] / n
+
+    return probabilites 
 
 
 def iterate_pagerank(corpus, damping_factor):
