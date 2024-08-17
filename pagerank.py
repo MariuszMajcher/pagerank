@@ -59,6 +59,15 @@ def transition_model(corpus, page, damping_factor):
     """
     # OK so it seems that I have to return a dictionary here, that will correspond to the probabilites of the pages, 
     # page links each have proportion of 0.85 and all the pages in corpus have proportion of 0.15
+    proportions = dict()
+    for page in corpus.keys():
+        proportions[page] = (0.15 / len(corpus)) # Create each page with proportion of chance being choosen
+
+    links = corpus[page]
+    for link in links:
+        proportions[link] += (0.85 / len(links)) # This will add these pages proportion of 0.85
+    return proportions
+
 
 
 def sample_pagerank(corpus, damping_factor, n):
