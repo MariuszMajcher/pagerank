@@ -99,21 +99,26 @@ def sample_pagerank(corpus, damping_factor, n):
 
     while i < n:
         i += 1
-        list_of_links = []
+        ranges = dict()
         proportions = transition_model(corpus, choosen_page, damping_factor)
+        
+        #list of all the keys
+        keys = list(proportions.keys())
 
-        # TODO: New idea, the choosen page will be selected based on single random, that float will somehow link to the page choosen
-        # TODO: So on each iteration will create a new dictionary, it will contain the low and high, 
-        # First low is zero, first high is whatever the value at this page, next low is previous high and next high is value stored at this page,
-        # Then generate random and return key that falls in the range of each stored tuple!
-        # for key, times in list(proportions.items()):
-        #     j = times * 1000
-        #     while j > 0:
-        #         list_of_links.append(key)
+        #Starting point
+        low = 0
+        for page in keys:
+           
+            high = proportions[page] + low
+           
+            ranges[page] = tuple(low, high)
+            low = ranges[page][0]
 
-        # Thist might be slow but for now it`s only method that comes to my mind
-        choosen_page = random.choice(list_of_links)
-        probabilites[choosen_page] += 1
+        choice = random()
+
+        for item in list(ranges.keys()):
+            if choice >= ranges[item][0] and choice < ranges[item][1]:
+                probabilites[item] += 1
 
     for page in probabilites:
         probabilites[page] = probabilites[page] / n
