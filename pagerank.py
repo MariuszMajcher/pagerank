@@ -2,6 +2,7 @@ import os
 import random
 import re
 import sys
+import copy
 import numpy as np
 
 DAMPING = 0.85
@@ -115,17 +116,27 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
+
     N = len(corpus)
-    page_rank = dict()
-    for page,links in corpus:
-        page_rank[page] = 1/N
-    converged = False
-    while not converged:
-        converged = True
-        for page, page_r in page_rank:
-            #Now need to finish the formula, not sure how to create it, 
-            #Maybe best to create a separate function that can be called
-            page_rank[page] = (1 - damping_factor) / N + damping_factor*(())
+    page_rank = {page: 1 / N for page in list(corpus.keys())}
+    all_pages = list(corpus.keys())
+    for page in all_pages:
+       if len(corpus[page]) == 0:
+           corpus[page] = {page for page in all_pages}
+
+    def PR(page):
+        # Need an exit condition, each time I calculate new probabilities, if that did not change by set value the function will return the probabilites
+        return ((1 - damping_factor) / len(corpus) + damping_factor * (sum([page_rank[key]/len(corpus[key]) for key, values in corpus.items() if page in values ])))
+
+    convergence = 1
+    
+    while convergence > 0.001:
+        convergence = 0
+        new_page_rank = {page: PR(page) for page in all_pages}
+        for key in page_rank:
+            convergence += max(page_rank[key], new_page_rank[key]) -  min(page_rank[key], new_page_rank[key])
+        page_rank = copy.deepcopy(new_page_rank)
+    return page_rank    
 
 
 if __name__ == "__main__":
