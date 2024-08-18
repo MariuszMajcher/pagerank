@@ -7,19 +7,6 @@ import numpy as np
 DAMPING = 0.85
 SAMPLES = 10000
 
-
-# Define a list of choices and their probabilities
-choices = ['A', 'B', 'C']
-probabilities = [0.1, 0.3, 0.6]
-
-# Sample one choice based on the probabilities
-sampled_choice = np.random.choice(choices, p=probabilities)
-print(sampled_choice)
-
-# Sample 10 choices
-samples = np.random.choice(choices, size=10, p=probabilities)
-print(samples)
-
 def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: python pagerank.py corpus")
@@ -110,7 +97,7 @@ def sample_pagerank(corpus, damping_factor, n):
         transition_probabilities = transition_model(corpus, choosen_page, damping_factor)
         pages = list(transition_probabilities.keys())
         weights = list(transition_probabilities.values())
-        choosen_page = random.choices(pages, weights, 1)[0] # It will return a list so will need to select first item to unpack it
+        choosen_page = np.random.choice(pages,p=weights)
         probabilites[choosen_page] += 1
 
     for page in probabilites:
