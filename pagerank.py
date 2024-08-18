@@ -77,7 +77,7 @@ def transition_model(corpus, page, damping_factor):
 
 def sample_pagerank(corpus, damping_factor, n):
     """
-    Return PageRank values for each page by sampling `n` pages
+    Return PageRank values for each page by sampling n pages
     according to transition model, starting with a page at random.
 
     Return a dictionary where keys are page names, and values are
@@ -86,30 +86,42 @@ def sample_pagerank(corpus, damping_factor, n):
     """
 
     choosen_page = random.choice(list(corpus.keys()))
+    i = 0
 
-    # Initialize the probabilities dictionary
-    probabilities = {page: 0 for page in corpus.keys()}
+    # Create dictinary with 0 for each page, each page will add 1 visit to it, at the end will change it to create proportion of 1 instead by dividing each result by n
+    probabilites = dict()
+    for page in corpus.keys():
+        probabilites[page] = 0
 
-    # Start by sampling the first page
-    probabilities[choosen_page] += 1
+    probabilites[choosen_page] += 1
 
-    for _ in range(1, n):  # already sampled the first page
+    while i < n:
+        i += 1
+        ranges = dict()
         proportions = transition_model(corpus, choosen_page, damping_factor)
+        
+        #list of all the keys
+        keys = list(proportions.keys())
+
+        #Starting point
+        low = 0
+        for page in keys:
+           
+            high = proportions[page] + low
+           
+            ranges[page] = (low, high)
+            low = ranges[page][1]
+            
         choice = random.random()
+        
+        for item in list(ranges.keys()):
+            if choice >= ranges[item][0] and choice < ranges[item][1]:
+                probabilites[item] += 1
 
-        cumulative_probability = 0.0
-        for page, prob in proportions.items():
-            cumulative_probability += prob
-            if choice < cumulative_probability:
-                choosen_page = page
-                probabilities[page] += 1
-                break
-
-    # Normalize the probabilities
-    probabilities = {page: count / n for page, count in probabilities.items()}
-    
-    return probabilities
-
+    for page in probabilites:
+        probabilites[page] = probabilites[page] / n
+  
+    return probabilites 
 
 
 def iterate_pagerank(corpus, damping_factor):
