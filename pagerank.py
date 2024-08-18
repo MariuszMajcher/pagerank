@@ -57,12 +57,11 @@ def transition_model(corpus, page, damping_factor):
     linked to by `page`. With probability `1 - damping_factor`, choose
     a link at random chosen from all pages in the corpus.
     """
-    # OK so it seems that I have to return a dictionary here, that will correspond to the probabilites of the pages, 
-    # page links each have proportion of 0.85 and all the pages in corpus have proportion of 0.15
+    # There is more to it, will need to consider the links that return to the previous page, as well as links that are to the same page
     proportions = dict()
 
     # In case there are no links on that page
-    if corpus[page] == {}:
+    if not len(corpus[page]) > 0:
         for page in list(corpus.keys()):
             proportions[page] = 1 / len(corpus)
         return proportions
@@ -72,7 +71,8 @@ def transition_model(corpus, page, damping_factor):
 
     links = corpus[page]
     for link in links:
-        proportions[link] += (damping_factor / len(links)) # This will add these pages proportion of 0.85
+        if link != page:
+            proportions[link] += (damping_factor / len(links)) # This will add these pages proportion of 0.85
     return proportions
 
 
