@@ -2,10 +2,23 @@ import os
 import random
 import re
 import sys
+import numpy as np
 
 DAMPING = 0.85
 SAMPLES = 10000
 
+
+# Define a list of choices and their probabilities
+choices = ['A', 'B', 'C']
+probabilities = [0.1, 0.3, 0.6]
+
+# Sample one choice based on the probabilities
+sampled_choice = np.random.choice(choices, p=probabilities)
+print(sampled_choice)
+
+# Sample 10 choices
+samples = np.random.choice(choices, size=10, p=probabilities)
+print(samples)
 
 def main():
     if len(sys.argv) != 2:
@@ -93,30 +106,12 @@ def sample_pagerank(corpus, damping_factor, n):
     for page in corpus.keys():
         probabilites[page] = 0
 
-    probabilites[choosen_page] += 1
-
-    while i < n:
-        i += 1
-        ranges = dict()
-        proportions = transition_model(corpus, choosen_page, damping_factor)
-        
-        #list of all the keys
-        keys = list(proportions.keys())
-
-        #Starting point
-        low = 0
-        for page in keys:
-           
-            high = proportions[page] + low
-           
-            ranges[page] = (low, high)
-            low = ranges[page][1]
-            
-        choice = random.random()
-        
-        for item in list(ranges.keys()):
-            if choice >= ranges[item][0] and choice < ranges[item][1]:
-                probabilites[item] += 1
+    for _ in range(n):
+        transition_probabilities = transition_model(corpus, choosen_page, damping_factor)
+        pages = list(transition_probabilities.keys())
+        weights = list(transition_probabilities.values())
+        choosen_page = random.choices(pages, weights, 1)[0] # It will return a list so will need to select first item to unpack it
+        probabilites[choosen_page] += 1
 
     for page in probabilites:
         probabilites[page] = probabilites[page] / n
@@ -148,3 +143,4 @@ def iterate_pagerank(corpus, damping_factor):
 
 if __name__ == "__main__":
     main()
+
